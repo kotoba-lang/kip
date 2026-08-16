@@ -72,8 +72,9 @@ lang/kip-process.edn        machine-normative: states, transitions, guards, diag
 lang/normative-surfaces.edn which paths are under the process (:adopted / :proposed)
 kips/kip-NNNN.edn           the registry — DataScript tx-data, :source/dataset "kip"
 kotoba/kip_gate_core.kotoba the decision core: word-typed, native-admissible
-src/kotoba/kip/core.cljc    codes, requirements, dates, quorum, reading documents
+src/kotoba/kip/core.cljc    codes, requirements, dates, reading documents
 src/kotoba/kip/registry.cljc numbering, duplicates, dangling references
+src/kotoba/kip/quorum.cljc  what makes a KIP Final: signatures over one payload
 scripts/check-kips.cljs     the gate (nbb)
 ```
 
@@ -83,7 +84,7 @@ scripts/check-kips.cljs     the gate (nbb)
 npx --yes nbb --classpath src scripts/check-kips.cljs . \
   --surfaces ../kotoba-lang/docs/authority-map.edn
 
-clojure -M:test          # 45 tests — includes the .kotoba parity sweep
+clojure -M:test          # 60 tests — includes the .kotoba parity sweep
 clojure -M:test-pure     # the .cljc suite alone, no compiler dependency
 ```
 
@@ -142,15 +143,68 @@ Two measurements worth keeping:
 - `record-new` is a special form and is **not** subject to that limit
   (`max-record-fields` is 32).
 
+## Quorum
+
+`kotoba.kip.quorum` is deliberately the same shape as
+`kagami.grant/admit-quorum`, which decides canonical west pin advances: an
+allow-set, a threshold, distinct valid signatures over one canonical payload,
+crypto injected, verdict plus reasons out. Two quorum mechanisms with different
+shapes in one workspace would be two things to get right.
+
+Nothing in this repository does crypto or holds a key list. `verify-fn`,
+`did->pubkey-hex` and `hash-fn` are arguments; the allow-list is
+`manifest/fleet-keys.edn` `:canonical` in the superproject — **the same one
+kagami reads** — and a copy here would be a second answer to who may sign. The
+wiring lives in the superproject:
+
+```sh
+CP="orgs/kotoba-lang/kip/src:orgs/kotoba-lang/kagami/src"
+nbb --classpath "$CP" scripts/kip-sign.cljs --kip kip-0001 --kagi fleet-gov1 --write
+nbb --classpath "$CP" scripts/kip-sign.cljs --kip kip-0001 --kagi fleet-gov2 --write
+nbb --classpath "$CP" scripts/verify-kip-quorum.cljs      # only then set :final
+```
+
+**The signature covers the whole document except `:kip/quorum`.** Signatures
+accumulate inside the file, so the digest must exclude them or the first one
+changes what the second is signing. Everything else is covered including the
+prose: a Final KIP whose specification was edited afterwards is a different KIP,
+and `editing-a-final-kip-invalidates-its-quorum` is the test that says so.
+`:kip/surfaces` is normalised (sorted, de-duplicated) on both sides of the
+payload, so a cosmetic reorder is free and adding or removing a surface is not.
+
+Measured 2026-08-16 with two throwaway ed25519 keys and a scratch 2-of-2 policy
+(`--policy-file` / `--kips` exist so this can be shown failing without signing a
+real KIP with a real governance key):
+
+```
+empty quorum      exit 1   REJECT  0/2 valid of 0 claimed  [:quorum-not-met]
+one signature     exit 1   REJECT  1/2 valid of 1 claimed  [:quorum-not-met]
+two signatures    exit 0   ADMIT   2/2 valid of 2 claimed
+```
+
+That sequence found a real bug: `--write` matched the quorum blob with
+`"[^\"]*"`, which stops at the first escaped quote inside it. The **first**
+signature wrote fine and the **second** appended past the truncated match and
+corrupted the file — a defect only the two-signature path shows, which is the
+only path that matters. `--write` now re-reads what it produced and refuses to
+save anything that does not parse back to the expected signature count.
+
+The verifier also self-checks node's ed25519 before trusting any answer — a
+round-trip it must accept and a corrupted signature it must reject. Without
+that, a broken verifier and a registry full of bad signatures produce the same
+output.
+
 ## What is deliberately not here
 
-**Signature verification is delegated.** `kotoba.kip.core/quorum-signers` takes
-an optional `:verify-fn`; without one it counts *claimed* signers, reports
-`:verified? false`, and the gate prints `QUORUM-VERIFY skipped:no-verifier` on
-its own line rather than folding an unchecked signature into a pass. Wiring it
-to kagami's ed25519 verification is a later KIP. **Until that lands, no KIP can
-honestly reach `:final`, and none has** — kip-0000 and kip-0001 are both
-`:review`.
+**A quorum of one party holding every key is not independent review.** The
+policy is 2-of-3 and all three keys are reachable from one kagi vault, so what
+the tooling can enforce is *two distinct keys*, not two distinct people. That is
+the honest limit of a single-owner keyring, and `kip-sign.cljs` says so at the
+top rather than leaving it implied.
+
+**Nothing is `:final`.** kip-0000 and kip-0001 are both `:review`. Admitting
+them is an owner action — the commands are under Quorum above — not something
+the tooling does on its own.
 
 **Coverage is not a fleet gate.** "Did this change to a normative surface
 actually have a KIP" needs another repository's git history and this registry at
