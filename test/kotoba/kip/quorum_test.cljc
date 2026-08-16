@@ -38,6 +38,24 @@
           b (q/canonical-str fake-hash (assoc kip :kip/quorum [(sig-by alice kip)]))]
       (is (= a b)))))
 
+(deftest the-payload-excludes-the-status
+  (testing "a quorum signature is what MOVES a KIP to :final, so it is made
+            while the document still says :last-call — if status were covered,
+            admitting the KIP would void the signatures that admitted it"
+    (is (= (q/canonical-str fake-hash (assoc kip :kip/status :last-call))
+           (q/canonical-str fake-hash (assoc kip :kip/status :final)))))
+  (testing "and the signatures survive the admission end to end"
+    (let [at-lc (assoc kip :kip/status :last-call)
+          signed [(sig-by alice at-lc) (sig-by bob at-lc)]
+          admitted (assoc kip :kip/status :final)]
+      (is (= :admit (:verdict (q/admit admitted signed (ctx))))))))
+
+(deftest the-payload-still-covers-the-clock
+  (testing "backdating last-call after signing must void the quorum"
+    (let [a (assoc kip :kip/last-call-started "2026-08-16")
+          b (assoc kip :kip/last-call-started "2026-07-01")]
+      (is (not= (q/canonical-str fake-hash a) (q/canonical-str fake-hash b))))))
+
 (deftest the-payload-covers-everything-else
   (doseq [[label mutated]
           [["the specification" (assoc kip :kip/specification "something else")]

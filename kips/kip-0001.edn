@@ -4,10 +4,10 @@
   :kip/number 1
   :kip/title "Normative surfaces change only through a Final KIP"
   :kip/track :standards
-  :kip/status :review
+  :kip/status :last-call
   :kip/author "root@junkawasaki.com"
   :kip/created "2026-08-16"
-  :kip/last-call-started nil
+  :kip/last-call-started "2026-08-16"
   :kip/superseded-by nil
 
   :kip/abstract
@@ -86,4 +86,4 @@
    enforced. Grandfathering (point 5) means no historical commit becomes
    non-conforming."
   :kip/discussion "[]"
-  :kip/quorum "[]"}]
+  :kip/quorum "[{:signer \"did:key:z6Mki4zQ9MMwufb8Vj51Z11EERBVHGDRxNtoKe5KYGqopUPs\", :signature \"36af972ed3d7f0c80976c3f819fa6aaaaec4a64f8163962f898f37915592127266d7760dbd9e198e517fe40df7af86d86d9ee6ac9850cc959041b7d0f7226f0e\", :at \"2026-08-16T08:58:31.128Z\"} {:signer \"did:key:z6MkiaTK4it22bog8TVeuvCQZFLST6zpTBK4tdgSik8R49bD\", :signature \"271357c5bcd0731f8479937b18dbffddb8ea20b9f35503af3fcaf5db6da84ae640ac422d8052fd65753baad1c2cb536090aaf996721d22ea1ac370922dd5d704\", :at \"2026-08-16T08:58:37.879Z\"}]"}]

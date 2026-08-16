@@ -4,10 +4,10 @@
   :kip/number 0
   :kip/title "KIP process"
   :kip/track :process
-  :kip/status :review
+  :kip/status :final
   :kip/author "root@junkawasaki.com"
   :kip/created "2026-08-16"
-  :kip/last-call-started nil
+  :kip/last-call-started nil   ;; process track has no last call
   :kip/superseded-by nil
 
   :kip/abstract

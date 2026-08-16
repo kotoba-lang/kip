@@ -44,13 +44,23 @@
 
   Signatures accumulate inside the document, so the digest must not cover them
   — otherwise the first signature changes what the second one is signing and a
-  quorum can never form. Everything else is covered, including the prose: a
-  Final KIP whose specification was edited afterwards is a different KIP, and
-  this is what notices.
+  quorum can never form.
+
+  `:kip/status` is excluded for the same class of reason. A quorum signature is
+  what MOVES a KIP to :final, so it has to be made while the document still
+  says :last-call; if status were covered, admitting the KIP would invalidate
+  the very signatures that admitted it. Measured 2026-08-16: signing at
+  :last-call and then setting :final changed the digest and broke both
+  signatures. The signature approves the content and its admission, not the
+  state the admission produces.
+
+  Everything else is covered, including the prose and `:kip/last-call-started`:
+  a Final KIP whose specification was edited afterwards, or whose clock was
+  backdated, is a different KIP, and this is what notices.
 
   Keys are sorted so the digest does not depend on map ordering."
   [hash-fn kip]
-  (let [stripped (-> (dissoc kip :kip/quorum)
+  (let [stripped (-> (dissoc kip :kip/quorum :kip/status)
                      ;; normalised here too, or a reorder would change the
                      ;; digest while leaving the surfaces slot identical — the
                      ;; two halves of the payload must agree about what a

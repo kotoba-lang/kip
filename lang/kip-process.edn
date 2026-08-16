@@ -132,6 +132,16 @@
   :last-call #{:kip/surfaces :kip/last-call-started}
   :final     #{:kip/evidence :kip/migration :kip/quorum}}
 
+ ;; Which required fields exist only because a track has that capability.
+ ;; Removed from the requirement set when the track's flag is false, instead of
+ ;; dropping the whole :last-call rung — `:kip/surfaces` sits on that rung but
+ ;; has nothing to do with the clock, and a process KIP that touches a normative
+ ;; surface still has to name it. Measured 2026-08-16: dropping the rung wholesale
+ ;; let a process KIP reach :final without declaring what it changes.
+ :track-gated-fields
+ {:requires-last-call #{:kip/last-call-started}
+  :requires-quorum #{:kip/quorum}}
+
  ;; ------------------------------------------------------------- diagnostics
  ;; Shared with kotoba/kip_gate_core.kotoba, which returns these as :i64.
  ;; Keep the numbers stable: they are what the parity test compares.
