@@ -4,7 +4,7 @@
   :kip/number 1
   :kip/title "Normative surfaces change only through a Final KIP"
   :kip/track :standards
-  :kip/status :review
+  :kip/status :final
   :kip/author "root@junkawasaki.com"
   :kip/created "2026-08-16"
   :kip/last-call-started nil
