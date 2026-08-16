@@ -5,6 +5,14 @@
 (def process
   {:guards {:last-call-elapsed {:min-days 14}
             :quorum-met {:threshold 2}}
+   ;; Mirrors lang/kip-process.edn :tracks. The per-track ladder reads these,
+   ;; and a fixture that omitted them defaulted every track to standards —
+   ;; which is exactly the bug being tested for.
+   :tracks {:standards {:requires-last-call true :requires-quorum true}
+            :process {:requires-last-call false :requires-quorum false}
+            :informational {:requires-last-call false :requires-quorum false}}
+   :track-gated-fields {:requires-last-call #{:kip/last-call-started}
+                        :requires-quorum #{:kip/quorum}}
    :requirements {:draft #{:kip/number :kip/title :kip/track :kip/status :kip/author :kip/created}
                   :review #{:kip/abstract :kip/motivation :kip/specification}
                   :last-call #{:kip/surfaces :kip/last-call-started}
@@ -152,6 +160,38 @@
     (is (= (core/required-fields process :draft)
            (core/required-fields process :withdrawn)
            (core/required-fields process :rejected)))))
+
+;; Found by trying to admit kip-0000 for real: the cumulative ladder demanded
+;; :kip/last-call-started and :kip/quorum from a :process KIP, which is defined
+;; as having neither, so no process or informational KIP could ever be Final.
+(deftest the-ladder-skips-rungs-a-track-does-not-climb
+  (testing "a standards KIP climbs every rung"
+    (is (contains? (core/required-fields process :final :standards) :kip/last-call-started))
+    (is (contains? (core/required-fields process :final :standards) :kip/quorum)))
+  (doseq [track [:process :informational]]
+    (testing (str track " never enters last-call and carries no quorum")
+      (let [req (core/required-fields process :final track)]
+        (is (not (contains? req :kip/last-call-started)))
+        (is (not (contains? req :kip/quorum)))
+        (testing "but still owes everything the earlier rungs asked for"
+          (is (contains? req :kip/specification))
+          (is (contains? req :kip/evidence))
+          (is (contains? req :kip/migration))
+          (is (contains? req :kip/surfaces) "surfaces is a :last-call field")))))
+  (testing "the 2-arity keeps the strict reading"
+    (is (= (core/required-fields process :final)
+           (core/required-fields process :final :standards)))))
+
+(deftest missing-fields-reads-the-track-off-the-document
+  (let [proc {:kip/number 1 :kip/title "t" :kip/track :process :kip/status :review
+              :kip/author "a" :kip/created "2026-08-16"
+              :kip/abstract "a" :kip/motivation "m" :kip/specification "s"
+              :kip/surfaces [:kip-process] :kip/evidence ["ran it"]
+              :kip/migration "none"}]
+    (is (empty? (core/missing-fields process proc :final))
+        "a complete process KIP is admittable without a clock or a quorum")
+    (is (seq (core/missing-fields process (assoc proc :kip/track :standards) :final))
+        "the same document on the standards track still owes both")))
 
 (deftest blank-counts-as-missing
   (let [kip {:kip/number 1 :kip/title "t" :kip/track :process :kip/status :draft

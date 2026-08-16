@@ -5,6 +5,14 @@
 (def process
   {:guards {:last-call-elapsed {:min-days 14}
             :quorum-met {:threshold 2}}
+   ;; Mirrors lang/kip-process.edn :tracks. The per-track ladder reads these,
+   ;; and a fixture that omitted them defaulted every track to standards —
+   ;; which is exactly the bug being tested for.
+   :tracks {:standards {:requires-last-call true :requires-quorum true}
+            :process {:requires-last-call false :requires-quorum false}
+            :informational {:requires-last-call false :requires-quorum false}}
+   :track-gated-fields {:requires-last-call #{:kip/last-call-started}
+                        :requires-quorum #{:kip/quorum}}
    :requirements {:draft #{:kip/number :kip/title :kip/track :kip/status :kip/author :kip/created}
                   :review #{:kip/abstract :kip/motivation :kip/specification}
                   :last-call #{:kip/surfaces :kip/last-call-started}

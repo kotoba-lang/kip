@@ -187,11 +187,29 @@
 
   An exit state (:withdrawn / :rejected / :superseded) adds nothing — you may
   withdraw a draft that never had a specification, and demanding one in order
-  to abandon it would be a reason not to abandon it."
-  [process state]
-  (let [rungs (if-let [n (rung state)] (take (inc n) ladder) [:draft])]
-    (reduce (fn [acc s] (into acc (get-in process [:requirements s] #{})))
-            #{} rungs)))
+  to abandon it would be a reason not to abandon it.
+
+  **The ladder is per-track.** Process and informational KIPs never enter
+  :last-call and never carry a quorum, so requiring those fields at :final
+  would make them unadmittable — measured 2026-08-16 by trying to admit
+  kip-0000, which came back missing :kip/last-call-started and :kip/quorum, two
+  fields its track is defined as not having. The 2-arity keeps the strict
+  (standards) reading for callers that do not know the track."
+  ([process state] (required-fields process state :standards))
+  ([process state track]
+   (let [rungs (if-let [n (rung state)] (take (inc n) ladder) [:draft])
+         base (reduce (fn [acc s] (into acc (get-in process [:requirements s] #{})))
+                      #{} rungs)
+         ;; Remove the individual fields a track has no capability for, not the
+         ;; whole rung: :kip/surfaces lives on the :last-call rung but is about
+         ;; what the KIP changes, not about the clock, so a process KIP still
+         ;; owes it.
+         gated (:track-gated-fields process)]
+     (reduce-kv (fn [acc cap fields]
+                  (if (get-in process [:tracks track cap] true)
+                    acc
+                    (apply disj acc fields)))
+                base gated))))
 
 (defn- present?
   "Blank counts as absent. An empty :kip/migration is exactly the absence the
@@ -207,7 +225,7 @@
   [process kip state]
   (into (sorted-set)
         (remove #(present? (get kip %)))
-        (required-fields process state)))
+        (required-fields process state (:kip/track kip :standards))))
 
 ;; ------------------------------------------------------------------ quorum
 (defn quorum-signers
