@@ -1,0 +1,40 @@
+{:paths ["src"]
+ :deps {org.clojure/clojure {:mvn/version "1.12.0"}}
+ :aliases
+ {:test
+  {:extra-paths ["test"]
+   :extra-deps
+   {io.github.cognitect-labs/test-runner
+    {:git/tag "v0.5.1" :git/sha "dfb30dd"}
+
+    ;; TEST-ONLY. The parity gate compiles kotoba/kip_gate_core.kotoba and runs
+    ;; it against src/kotoba/kip/core.cljc; nothing in :paths depends on either
+    ;; of these, and the library must stay usable from nbb.
+    ;;
+    ;; kotoba-lang/compiler now lives at kotoba-lang/amu, hence the :git/url
+    ;; override under the old coordinate. These two pins are advanced together —
+    ;; they are the pair murakumo qualified as a unit, and a kir/amu mismatch
+    ;; fails as a KIR shape error rather than as a version complaint.
+    io.github.kotoba-lang/compiler
+    {:git/url "https://github.com/kotoba-lang/amu.git"
+     :git/sha "1e21a1f56613d7d4c7628af1945ebf1cf7862ff3"}
+    io.github.kotoba-lang/kotoba-kir
+    {:git/url "https://github.com/kotoba-lang/kotoba-kir.git"
+     :git/sha "6d08e3cffa09c003f8dbcdfaee964c4a1ea021ad"}}
+   :main-opts ["-m" "cognitect.test-runner"]
+   :exec-fn cognitect.test-runner.api/test}
+
+  ;; The .cljc suite alone, with no compiler dependency — what runs where a
+  ;; maven/git fetch is not available. It is a strict subset: passing it does
+  ;; NOT mean the .kotoba core still agrees, which is what :test is for.
+  :test-pure
+  {:extra-paths ["test"]
+   :extra-deps {io.github.cognitect-labs/test-runner
+                {:git/tag "v0.5.1" :git/sha "dfb30dd"}}
+   :main-opts ["-m" "cognitect.test-runner"
+               "-n" "kotoba.kip.core-test"
+               "-n" "kotoba.kip.registry-test"]}
+
+  :lint
+  {:replace-deps {clj-kondo/clj-kondo {:mvn/version "2024.11.14"}}
+   :main-opts ["-m" "clj-kondo.main" "--lint" "src" "test" "--fail-level" "error"]}}}
