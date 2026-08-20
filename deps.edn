@@ -11,11 +11,11 @@
     ;; it against src/kotoba/kip/core.cljc; nothing in :paths depends on either
     ;; of these, and the library must stay usable from nbb.
     ;;
-    ;; kotoba-lang/compiler now lives at kotoba-lang/amu, hence the :git/url
+    ;; kotoba-lang/amu now lives at kotoba-lang/amu, hence the :git/url
     ;; override under the old coordinate. These two pins are advanced together —
     ;; they are the pair murakumo qualified as a unit, and a kir/amu mismatch
     ;; fails as a KIR shape error rather than as a version complaint.
-    io.github.kotoba-lang/compiler
+    io.github.kotoba-lang/amu
     {:git/url "https://github.com/kotoba-lang/amu.git"
      :git/sha "1e21a1f56613d7d4c7628af1945ebf1cf7862ff3"}
     io.github.kotoba-lang/kotoba-kir
