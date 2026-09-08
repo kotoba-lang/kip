@@ -31,7 +31,7 @@
   (:require ["node:fs" :as fs]
             ["node:path" :as path]
             [clojure.edn :as edn]
-            [clojure.string :as str]
+            [kotoba.lang.text :as str]
             [kotoba.kip.core :as core]
             [kotoba.kip.registry :as registry]))
 
