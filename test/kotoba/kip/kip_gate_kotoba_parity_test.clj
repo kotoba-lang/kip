@@ -16,7 +16,7 @@
   records — the same shape murakumo's oracle parity tests use. That also means
   the record constructors themselves are under test, which calling the function
   with pre-built values would skip."
-  (:require [clojure.string :as str]
+  (:require [kotoba.lang.text :as str]
             [clojure.test :refer [deftest is testing]]
             [kotoba.compiler.core :as compiler]
             [kotoba.kir :as ir]

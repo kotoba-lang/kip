@@ -17,7 +17,7 @@
 
   The operator-side wiring lives in the superproject at
   `scripts/verify-kip-quorum.cljs` (node:crypto + `kagami.did` + fleet-keys)."
-  (:require [clojure.string :as str]))
+  (:require [kotoba.lang.text :as str]))
 
 ;; --------------------------------------------------------------- the payload
 

@@ -15,7 +15,7 @@
   Nothing in this namespace does IO. `read-kip` takes already-parsed tx-data."
   (:require [clojure.edn :as edn]
             [clojure.set :as set]
-            [clojure.string :as str]))
+            [kotoba.lang.text :as str]))
 
 ;; ---------------------------------------------------------------- code tables
 ;; These are the wire between this namespace, the .kotoba core, and the gate's

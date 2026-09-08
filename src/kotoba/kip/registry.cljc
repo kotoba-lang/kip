@@ -10,7 +10,7 @@
   No IO. `check` takes `[{:path ... :tx-data ...}]` — the caller reads the
   files, which is what lets the same function run under nbb in the gate, under
   the JVM in the test suite, and against a hand-built fixture."
-  (:require [clojure.string :as str]
+  (:require [kotoba.lang.text :as str]
             [kotoba.kip.core :as core]))
 
 (defn number-from-path

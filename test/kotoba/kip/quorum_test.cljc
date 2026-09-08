@@ -1,5 +1,5 @@
 (ns kotoba.kip.quorum-test
-  (:require [clojure.string :as str]
+  (:require [kotoba.lang.text :as str]
             [clojure.test :refer [deftest is testing]]
             [kotoba.kip.quorum :as q]))
 
