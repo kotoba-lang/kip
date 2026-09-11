@@ -122,7 +122,7 @@
   :kip/surfaces "[:kip-process]"
   :kip/requires "[]"
   :kip/evidence
-  "[\"nbb scripts/repo-search.cljs proposal | improvement | rfc — 0 matching repositories of 4187\"
+  "[\"kbb --backend sci scripts/repo-search.cljk proposal | improvement | rfc — 0 matching repositories of 4187\"
     \"grep over manifest/west.yml project names for kip|eip|ipip|rfc|proposal — 0 hits\"
     \"grep -rniE 'improvement proposal|proposal process|RFC process' over kotoba-lang/kotoba-lang — 0 hits\"
     \"16 paths named in lang/normative-surfaces.edn verified present in their repositories 2026-08-16\"]"
