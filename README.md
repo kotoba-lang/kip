@@ -81,11 +81,11 @@ scripts/check-kips.cljk     the gate (nbb)
 ## Running it
 
 ```sh
-npx --yes nbb --classpath src scripts/check-kips.cljk . \
+npx --yes kbb --backend sci --classpath src scripts/check-kips.cljk . \
   --surfaces ../kotoba-lang/docs/authority-map.edn
 
-clojure -M:test          # 60 tests — includes the .kotoba parity sweep
-clojure -M:test-pure     # the .cljc suite alone, no compiler dependency
+kbb -M:test          # 60 tests — includes the .kotoba parity sweep
+kbb -M:test-pure     # the .cljc suite alone, no compiler dependency
 ```
 
 `<root>` must be the **first** positional argument. Several gates in this
@@ -159,9 +159,9 @@ wiring lives in the superproject:
 
 ```sh
 CP="orgs/kotoba-lang/kip/src:orgs/kotoba-lang/kagami/src"
-nbb --classpath "$CP" scripts/kip-sign.cljs --kip kip-0001 --kagi fleet-gov1 --write
-nbb --classpath "$CP" scripts/kip-sign.cljs --kip kip-0001 --kagi fleet-gov2 --write
-nbb --classpath "$CP" scripts/verify-kip-quorum.cljs      # only then set :final
+kbb --backend sci --classpath "$CP" scripts/kip-sign.cljs --kip kip-0001 --kagi fleet-gov1 --write
+kbb --backend sci --classpath "$CP" scripts/kip-sign.cljs --kip kip-0001 --kagi fleet-gov2 --write
+kbb --backend sci --classpath "$CP" scripts/verify-kip-quorum.cljs      # only then set :final
 ```
 
 **The signature covers the whole document except `:kip/quorum`.** Signatures

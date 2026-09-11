@@ -1,7 +1,7 @@
-#!/usr/bin/env nbb
+#!/usr/bin/env kbb
 ;; check-kips.cljs — registry integrity for kotoba-lang/kip.
 ;;
-;;   npx --yes nbb --classpath <root>/src <root>/scripts/check-kips.cljk <root> [--surfaces <authority-map.edn>]
+;;   npx --yes kbb --backend sci --classpath <root>/src <root>/scripts/check-kips.cljk <root> [--surfaces <authority-map.edn>]
 ;;
 ;; <root> must be the FIRST positional argument. Several gates in this workspace
 ;; take the tree as `(first (remove #(str/starts-with? % "--") argv))`, so
