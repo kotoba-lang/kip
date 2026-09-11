@@ -21,7 +21,7 @@
 ;; records) so it stays inside the native admission gate in
 ;; `kotoba-lang/kotoba-kir` (`only-native-word-typed-features?`). The
 ;; keyword <-> code mapping, the registry, the file IO and every collection live
-;; in `src/kotoba/kip/core.cljc`, which calls this.
+;; in `src/kotoba/kip/core.cljk`, which calls this.
 ;;
 ;; This is the decision-core split described in the workspace rule "移行の単位は
 ;; 決定核" — the same shape as murakumo's `kotoba/*_core.kotoba`. It is NOT here
@@ -39,7 +39,7 @@
 ;; replaced base-N packing with records), because a packed i64 loses the field
 ;; names that make the guard readable.
 ;;
-;; Parity oracle: test/kotoba/kip/kip_gate_kotoba_parity_test.clj compares every
+;; Parity oracle: test/kotoba/kip/kip_gate_kotoba_parity_test.cljk compares every
 ;; branch below against the .cljc implementation. If you edit one, edit both;
 ;; the parity test is what stops them drifting.
 ;;

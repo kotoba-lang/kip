@@ -4,7 +4,7 @@
 
   The judgement itself — may this KIP move from this state to that one, and if
   not, why — is duplicated in `kotoba/kip_gate_core.kotoba` as a word-typed
-  decision core, and `test/kotoba/kip/kip_gate_kotoba_parity_test.clj` compares
+  decision core, and `test/kotoba/kip/kip_gate_kotoba_parity_test.cljk` compares
   the two on every branch. `transition-code` below is the Clojure half of that
   pair: keep the two in step or the parity test fails, which is the point.
 
