@@ -38,7 +38,7 @@
   :path "docs/authority-map.edn"
   :key [:authorities]
   :selector "kind ∈ #{:machine-normative :human-normative}"
-  :note "Transcribed by hand. `scripts/check-kips.cljs --surfaces <path-to-authority-map>`
+  :note "Transcribed by hand. `scripts/check-kips.cljk --surfaces <path-to-authority-map>`
          re-derives and diffs when the sibling checkout is available; without it
          the check prints SURFACE-DRIFT skipped:no-authority-map and does not pass that line."}
 

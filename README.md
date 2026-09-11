@@ -72,16 +72,16 @@ lang/kip-process.edn        machine-normative: states, transitions, guards, diag
 lang/normative-surfaces.edn which paths are under the process (:adopted / :proposed)
 kips/kip-NNNN.edn           the registry — DataScript tx-data, :source/dataset "kip"
 kotoba/kip_gate_core.kotoba the decision core: word-typed, native-admissible
-src/kotoba/kip/core.cljc    codes, requirements, dates, reading documents
-src/kotoba/kip/registry.cljc numbering, duplicates, dangling references
-src/kotoba/kip/quorum.cljc  what makes a KIP Final: signatures over one payload
-scripts/check-kips.cljs     the gate (nbb)
+src/kotoba/kip/core.cljk    codes, requirements, dates, reading documents
+src/kotoba/kip/registry.cljk numbering, duplicates, dangling references
+src/kotoba/kip/quorum.cljk  what makes a KIP Final: signatures over one payload
+scripts/check-kips.cljk     the gate (nbb)
 ```
 
 ## Running it
 
 ```sh
-npx --yes nbb --classpath src scripts/check-kips.cljs . \
+npx --yes nbb --classpath src scripts/check-kips.cljk . \
   --surfaces ../kotoba-lang/docs/authority-map.edn
 
 clojure -M:test          # 60 tests — includes the .kotoba parity sweep
@@ -126,7 +126,7 @@ sealed scalar records, which is what `kotoba-kir`'s
 mapping stay in `.cljc`. That is the decision-core split, the same shape
 murakumo's `kotoba/*_core.kotoba` use.
 
-`test/kotoba/kip/kip_gate_kotoba_parity_test.clj` compiles the real source and
+`test/kotoba/kip/kip_gate_kotoba_parity_test.cljk` compiles the real source and
 compares it against the `.cljc` on the **full** cross product — 441 state/role/
 track cases and 160 guard cases, not a sample — and then compiles a
 deliberately broken copy and asserts the sweep catches it, and that the cases

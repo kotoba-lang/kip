@@ -99,7 +99,7 @@
 
    The judgement itself — may this KIP move from this state to that one — is a
    word-typed decision core in kotoba/kip_gate_core.kotoba, mirrored in
-   src/kotoba/kip/core.cljc, with a parity test comparing every branch.
+   src/kotoba/kip/core.cljk, with a parity test comparing every branch.
 
    ### What is deliberately not automated
 
