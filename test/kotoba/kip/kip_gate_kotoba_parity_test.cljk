@@ -17,7 +17,7 @@
   the record constructors themselves are under test, which calling the function
   with pre-built values would skip."
   (:require [kotoba.lang.text :as str]
-            [clojure.test :refer [deftest is testing]]
+            [kotoba.test :refer [deftest is testing]]
             [kotoba.compiler.core :as compiler]
             [kotoba.kir :as ir]
             [kotoba.kip.core :as core]))

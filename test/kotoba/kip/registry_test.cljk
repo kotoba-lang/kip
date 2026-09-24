@@ -1,5 +1,5 @@
 (ns kotoba.kip.registry-test
-  (:require [clojure.test :refer [deftest is testing]]
+  (:require [kotoba.test :refer [deftest is testing]]
             [kotoba.kip.registry :as registry]))
 
 (def process
