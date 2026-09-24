@@ -1,6 +1,6 @@
 (ns kotoba.kip.quorum-test
   (:require [kotoba.lang.text :as str]
-            [clojure.test :refer [deftest is testing]]
+            [kotoba.test :refer [deftest is testing]]
             [kotoba.kip.quorum :as q]))
 
 ;; A fake signature scheme: a signature is "<pubkey>|<payload>". It is not
